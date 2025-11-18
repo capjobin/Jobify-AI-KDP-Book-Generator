@@ -16,36 +16,27 @@ templates = Jinja2Templates(directory="templates")
 def homepage(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
-@app.post("/generate")
-def generate_book(
-    title: str = Form(...),
-    author: str = Form(""),
-    pages: int = Form(24),
-    sample_text: str = Form("")
-):
-    # --- FIX 1: interior PDF expects only (title, content) ---
-    content = f"{author}\n\n" + (sample_text or "Sample text")
+@app.post('/generate')
+def generate_book(title: str = Form(...), author: str = Form(''), content: str = Form('')):
     interior = create_interior_pdf(title, content)
-
-    # --- FIX 2: cover image ---
     cover = create_simple_cover(title, author)
 
-    # ZIP creation
     mem = BytesIO()
-    safe = (title or "book").replace(" ", "_")
+    z = zipfile.ZipFile(mem, mode='w')
 
-    with zipfile.ZipFile(mem, mode="w") as z:
-        # --- FIX 3: .getvalue() required ---
-        z.writestr(f"{safe}-interior.pdf", interior.getvalue())
-        z.writestr(f"{safe}-cover.jpg", cover.getvalue())
+    safe = (title or 'book').replace(' ', '_')
 
+    z.writestr(f"{safe}-interior.pdf", interior.getvalue())
+    z.writestr(f"{safe}-cover.jpg", cover.getvalue())
+
+    z.close()
     mem.seek(0)
 
     return StreamingResponse(
         mem,
-        media_type="application/zip",
-        headers={"Content-Disposition": f"attachment; filename={safe}-kdp.zip"}
-    )
+        media_type='application/zip',
+        headers={'Content-Disposition': f'attachment; filename={safe}-kdp.zip'}
+)
 
 @app.get("/health")
 def health():
