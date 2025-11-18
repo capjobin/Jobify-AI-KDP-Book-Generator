@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>KDP Book Generator — PRO</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <div class="brand">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="24" height="24" rx="6" fill="#0b5fff"/>
+          <path d="M6 8h12v2H6zM6 12h12v2H6z" fill="white"/>
+        </svg>
+        <h1>KDP Book Generator</h1>
+      </div>
+      <nav class="nav"><a href="/docs" target="_blank">API Docs</a></nav>
+    </header>
+
+    <main class="container">
+      <section class="card hero">
+        <h2>Create KDP-ready books — fast</h2>
+        <p>Professional interior PDF + print-ready cover. Use for drafts, KDP mockups, or publishing practice.</p>
+      </section>
+
+      <section class="card formcard">
+        <form id="genForm" method="post" action="/generate">
+          <div class="row">
+            <label>Title<input name="title" required value="My Demo Book"></label>
+            <label>Author<input name="author" value="Jobin Antony"></label>
+          </div>
+          <div class="row">
+            <label>Pages<input name="pages" type="number" min="2" value="24"></label>
+          </div>
+          <label>Sample text<textarea name="sample_text" rows="6">Once upon a time... write your sample chapter here.</textarea></label>
+          <div class="actions">
+            <button class="primary" type="submit">Generate & download ZIP</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="card info">
+        <h3>How it works</h3>
+        <ol>
+          <li>Fill title, author, pages and sample text.</li>
+          <li>Click generate — server will create interior PDF and cover.</li>
+          <li>Your browser downloads a ZIP with the files.</li>
+        </ol>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <small>Made with ♥ — Deploy on Render for production</small>
+    </footer>
+  </div>
+</body>
+            </html>
+        
