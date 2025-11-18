@@ -1,40 +1,61 @@
-from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+from io import BytesIO
 from PIL import Image, ImageDraw, ImageFont
-import io
+
+
+def create_interior_pdf(title, content):
+    """
+    Creates a simple PDF containing the book's text.
+    """
+    buffer = BytesIO()
+    c = canvas.Canvas(buffer, pagesize=letter)
+
+    text = c.beginText(40, 750)
+    text.setFont("Helvetica", 14)
+
+    text.textLine(title)
+    text.textLine("")
+
+    for line in content.split("\n"):
+        text.textLine(line)
+
+    c.drawText(text)
+    c.showPage()
+    c.save()
+
+    buffer.seek(0)
+    return buffer
 
 
 def create_simple_cover(title, author):
     """
-    Generates a simple PNG book cover with title + author
+    Creates a JPG cover with title + author.
     """
-
-    img = Image.new("RGB", (1400, 2100), color="white")
+    img = Image.new("RGB", (1600, 2560), color="white")
     draw = ImageDraw.Draw(img)
 
     try:
         font_title = ImageFont.truetype("arial.ttf", 80)
-        font_author = ImageFont.truetype("arial.ttf", 50)
     except:
         font_title = ImageFont.load_default()
+
+    try:
+        font_author = ImageFont.truetype("arial.ttf", 50)
+    except:
         font_author = ImageFont.load_default()
 
-    # Title placement
-    lines = title.split(" ")
-    y = 600
+    # Title
+    draw.text((100, 300), title, font=font_title, fill="black")
 
-    for line in lines:
-        bbox = draw.textbbox((0, 0), line, font=font_title)
-        w = bbox[2] - bbox[0]
-        draw.text(((1400 - w) / 2, y), line, fill="black", font=font_title)
-        y += 120
+    # Author
+    draw.text((100, 500), f"By {author}", font=font_author, fill="gray")
 
-    # Author placement
-    if author:
-        bbox = draw.textbbox((0, 0), author, font=font_author)
-        w = bbox[2] - bbox[0]
-        draw.text(((1400 - w) / 2, 1800), author, fill="black", font=font_author)
-
+    # Save to bytes
+    buf = BytesIO()
+    img.save(buf, format="JPEG")
+    buf.seek(0)
+    return buf
     # Save image to bytes
     img_bytes = io.BytesIO()
     img.save(img_bytes, format="PNG")
