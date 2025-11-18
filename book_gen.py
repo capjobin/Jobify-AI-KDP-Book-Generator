@@ -43,9 +43,9 @@ def create_simple_cover(title, author):
     return img_bytes
 
 
-def create_interior_pdf(title, content):
+def create_interior_pdf(title, author, pages, content):
     """
-    Creates a simple PDF containing the book's text
+    Creates a simple interior PDF
     """
 
     buffer = io.BytesIO()
@@ -54,11 +54,19 @@ def create_interior_pdf(title, content):
     textobject = c.beginText(40, 750)
     textobject.setFont("Helvetica", 14)
 
-    textobject.textLine(title)
+    # Title + author at top
+    textobject.textLine(f"Title: {title}")
+    textobject.textLine(f"Author: {author}")
+    textobject.textLine("")
+    textobject.textLine("Book Content")
+    textobject.textLine("--------------------")
     textobject.textLine("")
 
-    # Split content into lines
-    for line in content.split("\n"):
+    # Add page limit
+    lines = content.split("\n")
+    max_lines = pages * 35  # approx lines per page
+
+    for line in lines[:max_lines]:
         textobject.textLine(line)
 
     c.drawText(textobject)
