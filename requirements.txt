@@ -1,0 +1,7 @@
+fastapi
+uvicorn[standard]
+reportlab
+Pillow
+python-multipart
+jinja2
+aiofiles
